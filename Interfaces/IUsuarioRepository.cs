@@ -18,6 +18,6 @@ public interface IUsuarioRepository
 
     Task<bool> EmailExistsAsync(string  email, CancellationToken  ct);
 
-    Task<int> SaveChangesAsync(CancellationToken  ct);
+    Task SaveChangesAsync(CancellationToken  ct);
 
 }

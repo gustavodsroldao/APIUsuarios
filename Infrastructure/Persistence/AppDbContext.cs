@@ -1,6 +1,11 @@
-﻿namespace APIUsuarios.Infrastructure.Persistence;
+﻿using APIUsuarios.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
-public class AppDbContext
+namespace APIUsuarios.Infrastructure.Persistence;
+
+public class AppDbContext : DbContext
 {
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
     
+    public DbSet<Usuario> Usuarios { get; set; }
 }
