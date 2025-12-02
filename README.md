@@ -9,7 +9,7 @@ API REST desenvolvida como parte da Avaliação Semestral da disciplina de Desen
 - Entity Framework Core 8.0
 - SQLite
 - FluentValidation
-- Swagger / OpenAPI
+- Swagger
 
 ## Padrões de Projeto Implementados
 - **Clean Architecture**: Separação clara de responsabilidades em camadas (Domain, Application, Infrastructure, API).
@@ -68,6 +68,5 @@ curl -X GET http://localhost:5000/usuarios
   - **Infrastructure**: Implementação de acesso a dados (EF Core, Repositories).
 
 ## Autor
-Nome: Gustavo
-RA: [Seu RA]
+Nome: Gustavo da Silveira Roldão
 Curso: Desenvolvimento Backend
