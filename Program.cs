@@ -1,9 +1,9 @@
 using APIUsuarios.Application.DTOs;
 using APIUsuarios.Infrastructure.Persistence;
-using APIUsuarios.Interfaces;
-using APIUsuarios.Repositories;
-using APIUsuarios.Services;
-using APIUsuarios.Validators;
+using APIUsuarios.Application.Interfaces;
+using APIUsuarios.Infrastructure.Repositories;
+using APIUsuarios.Application.Services;
+using APIUsuarios.Application.Validators;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -36,7 +36,7 @@ app.MapGet("/usuarios/{id}", async (int id, IUsuarioService service, Cancellatio
     return usuario is not null ? Results.Ok(usuario) : Results.NotFound();
 });
 
-// POST → já estava correto
+// POST
 app.MapPost("/usuarios", async (
     UsuarioCreateDto dto,
     IUsuarioService service,
@@ -48,41 +48,39 @@ app.MapPost("/usuarios", async (
     if (!validationResult.IsValid)
         return Results.ValidationProblem(validationResult.ToDictionary());
 
-    var usuario = await service.CriarAsync(dto, ct);
-    return Results.Created($"/usuarios/{usuario.Id}", usuario);
+    try
+    {
+        var usuario = await service.CriarAsync(dto, ct);
+        return Results.Created($"/usuarios/{usuario.Id}", usuario);
+    }
+    catch (InvalidOperationException ex)
+    {
+        return Results.Conflict(new { message = ex.Message });
+    }
 });
 
+// PUT
 app.MapPut("/usuarios/{id}", async (
     int id,
     UsuarioUpdateDto dto,
     IUsuarioService service,
     CancellationToken ct,
-    [FromServices] IValidator<UsuarioUpdateDto> validator) => // ← AQUI ERA O PROBLEMA
+    [FromServices] IValidator<UsuarioUpdateDto> validator) =>
 {
     var validationResult = await validator.ValidateAsync(dto, ct);
 
     if (!validationResult.IsValid)
         return Results.ValidationProblem(validationResult.ToDictionary());
 
-    var usuarioAtualizado = await service.AtualizarAsync(id, dto, ct);
-    return usuarioAtualizado is not null ? Results.Ok(usuarioAtualizado) : Results.NotFound();
-});
-
-// PATCH → MESMA COISA, adicionado [FromServices]
-app.MapPatch("/usuarios/{id}", async (
-    int id,
-    UsuarioUpdateDto dto,
-    IUsuarioService service,
-    CancellationToken ct,
-    [FromServices] IValidator<UsuarioUpdateDto> validator) => // ← AQUI TAMBÉM
-{
-    var validationResult = await validator.ValidateAsync(dto, ct);
-
-    if (!validationResult.IsValid)
-        return Results.ValidationProblem(validationResult.ToDictionary());
-
-    var usuarioAtualizado = await service.AtualizarAsync(id, dto, ct);
-    return usuarioAtualizado is not null ? Results.Ok(usuarioAtualizado) : Results.NotFound();
+    try
+    {
+        var usuarioAtualizado = await service.AtualizarAsync(id, dto, ct);
+        return usuarioAtualizado is not null ? Results.Ok(usuarioAtualizado) : Results.NotFound();
+    }
+    catch (InvalidOperationException ex)
+    {
+        return Results.Conflict(new { message = ex.Message });
+    }
 });
 
 // DELETE
