@@ -69,4 +69,6 @@ curl -X GET http://localhost:5000/usuarios
 
 ## Autor
 Nome: Gustavo da Silveira Roldão
+RA: 2024006666
 Curso: Desenvolvimento Backend
+Link da apresentação: https://www.youtube.com/watch?v=l8JVQJkI3Qw
