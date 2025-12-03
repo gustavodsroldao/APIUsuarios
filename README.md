@@ -68,7 +68,7 @@ curl -X GET http://localhost:5000/usuarios
   - **Infrastructure**: Implementação de acesso a dados (EF Core, Repositories).
 
 ## Autor
-Nome: Gustavo da Silveira Roldão
-RA: 2024006666
-Curso: Desenvolvimento Backend
-Link da apresentação: https://www.youtube.com/watch?v=l8JVQJkI3Qw
+- Nome: Gustavo da Silveira Roldão
+- RA: 2024006666
+- Curso: Desenvolvimento Backend
+- Link da apresentação: https://www.youtube.com/watch?v=l8JVQJkI3Qw
