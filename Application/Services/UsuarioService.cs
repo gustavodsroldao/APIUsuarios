@@ -36,7 +36,7 @@ public class UsuarioService : IUsuarioService
         {
             Nome = dto.Nome,
             Email = dto.Email.ToLower(),
-            Senha = dto.Senha, // In a real app, hash this!
+            Senha = dto.Senha,
             DataNascimento = dto.DataNascimento,
             Telefone = dto.Telefone,
             Ativo = true,
