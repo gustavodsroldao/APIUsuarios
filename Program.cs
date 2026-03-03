@@ -17,6 +17,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 
+builder.Services.AddScoped<IEmpresaRepository, EmpresaRepository>();
+builder.Services.AddScoped<IEmpresaService, EmpresaService>();
+
 // Registro automático de todos os validadores que estão no assembly
 builder.Services.AddValidatorsFromAssemblyContaining<UsuarioCreateDtoValidator>();
 
@@ -85,6 +88,76 @@ app.MapPut("/usuarios/{id}", async (
 
 // DELETE
 app.MapDelete("/usuarios/{id}", async (int id, IUsuarioService service, CancellationToken ct) =>
+{
+    var removido = await service.RemoverAsync(id, ct);
+    return removido ? Results.NoContent() : Results.NotFound();
+});
+
+// Empresas
+
+// GET todos
+app.MapGet("/empresas", async (IEmpresaService service, CancellationToken ct) =>
+{
+    var empresas = await service.ListarAsync(ct);
+    return Results.Ok(empresas);
+});
+
+// GET por id
+app.MapGet("/empresas/{id}", async (int id, IEmpresaService service, CancellationToken ct) =>
+{
+    var empresa = await service.ObterAsync(id, ct);
+    return empresa is not null ? Results.Ok(empresa) : Results.NotFound();
+});
+
+// POST
+app.MapPost("/empresas", async (
+    EmpresaCreateDto dto,
+    IEmpresaService service,
+    CancellationToken ct,
+    [FromServices] IValidator<EmpresaCreateDto> validator) =>
+{
+    var validationResult = await validator.ValidateAsync(dto, ct);
+
+    if (!validationResult.IsValid)
+        return Results.ValidationProblem(validationResult.ToDictionary());
+
+    try
+    {
+        var empresa = await service.CriarAsync(dto, ct);
+        return Results.Created($"/empresas/{empresa.Id}", empresa);
+    }
+    catch (InvalidOperationException ex)
+    {
+        return Results.Conflict(new { message = ex.Message });
+    }
+});
+
+// PUT
+app.MapPut("/empresas/{id}", async (
+    int id,
+    EmpresaUpdateDto dto,
+    IEmpresaService service,
+    CancellationToken ct,
+    [FromServices] IValidator<EmpresaUpdateDto> validator) =>
+{
+    var validationResult = await validator.ValidateAsync(dto, ct);
+
+    if (!validationResult.IsValid)
+        return Results.ValidationProblem(validationResult.ToDictionary());
+
+    try
+    {
+        var empresaAtualizada = await service.AtualizarAsync(id, dto, ct);
+        return empresaAtualizada is not null ? Results.Ok(empresaAtualizada) : Results.NotFound();
+    }
+    catch (InvalidOperationException ex)
+    {
+        return Results.Conflict(new { message = ex.Message });
+    }
+});
+
+// DELETE
+app.MapDelete("/empresas/{id}", async (int id, IEmpresaService service, CancellationToken ct) =>
 {
     var removido = await service.RemoverAsync(id, ct);
     return removido ? Results.NoContent() : Results.NotFound();
