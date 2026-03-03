@@ -1,6 +1,8 @@
 # yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+
 language: "pt-BR"
 early_access: false
+
 reviews:
   profile: "chill"
   request_changes_workflow: false
@@ -8,8 +10,15 @@ reviews:
   poem: true
   review_status: true
   review_details: false
+
+  instructions: |
+    All review comments MUST be written in Brazilian Portuguese.
+    Never use English in reviews or summaries.
+    Explain suggestions clearly in Portuguese.
+
   auto_review:
     enabled: true
     drafts: false
+
 chat:
   auto_reply: true
